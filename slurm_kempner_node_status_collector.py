@@ -120,7 +120,7 @@ class SlurmClusterStatusCollector:
         yield k_lsload
 
 if __name__ == "__main__":
-    start_http_server(8000)
+    start_http_server(9005)
     REGISTRY.register(SlurmClusterStatusCollector())
     while True:
         time.sleep(30)
