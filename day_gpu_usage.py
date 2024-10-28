@@ -1,5 +1,6 @@
 import re
 import subprocess
+import sys
 
 
 def extract_gres_gpu(string):
@@ -120,18 +121,23 @@ group_dict = {}
 node_list = get_node_names()
 wgpu = {'a100': 209.1, 'h100': 546.9}
 
+
+# Get the input file name from the argument
+input_file_name = sys.argv[1]
+
+
 # Open the file and process it line by line
-with open("sample.dat", 'r') as file:
+with open(input_file_name, 'r') as file:
     for line in file:
-        # Filter lines containing the word "COMPLETED"
+        # Filter lines containing the finished jobs
         if "gpu" in line and "RUNNING" not in line and "PENDING" not in line:
             # Split the line using the '|' separator
             fields = line.strip().split('|')
             # Ensure there are enough fields to avoid index errors
-            if len(fields) >= 4:
+            if len(fields) >= 8:
                 user_key = fields[2]
-                group_key = fields[3]
-                partition_key = fields[4]
+                group_key = fields[3].split(',')[0]
+                partition_key = fields[4].split(',')[0]
                 gpu_tfield = fields[5]
                 gpu_count = extract_gres_gpu(fields[6])
                 node_name = fields[7]
@@ -152,8 +158,8 @@ with open("sample.dat", 'r') as file:
 
 
 #print_sorted_dictionary(user_dict)
-write_dict_to_file(user_dict, "user_dictionary.txt")
-write_dict_to_file(group_dict, "group_dictionary.txt")
-write_dict_to_file(partition_dict, "partition_dictionary.txt")
+write_dict_to_file(user_dict, "user_dictionary.csv")
+write_dict_to_file(group_dict, "group_dictionary.csv")
+write_dict_to_file(partition_dict, "partition_dictionary.csv")
 
 
