@@ -1,7 +1,18 @@
+#!/usr/bin/python3
+
 import os, sys, re, csv, time, subprocess
 
 from typing import List, Tuple, Dict
 from datetime import datetime, timedelta
+
+from os import path
+
+prefix = os.path.normpath(
+  os.path.join(os.path.abspath(os.path.dirname(__file__)))
+)
+external = os.path.join(prefix, 'external')
+sys.path = [prefix, external] + sys.path
+
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
 from prometheus_client import start_http_server
 
@@ -47,11 +58,10 @@ def update_dictionary(data_dict, name, t_time, g_time, g_tr_time):
 def get_node_names():
     try:
         command = "sinfo -p kempner_requeue -N 1 | grep kempner | awk '{print $1}'"
-        result = subprocess.check_output(command, shell=True, text=True)
+        result = subprocess.check_output(command, shell=True, universal_newlines=True)
         node_names = result.strip().split('\n')
         return node_names
     except subprocess.CalledProcessError as e:
-        print(f"Error occurred while running the command: {e}")
         return []
 
 def check_kempner_node(n_name, n_list, p_key):
@@ -165,7 +175,6 @@ def run_command(s_date, e_date):
     :param s_date: Start date for the command.
     :param e_date: End date for the command.
     """
-    print("running the sacct command")
     command = [
         "sacct",
         "-S", s_date,
@@ -176,10 +185,9 @@ def run_command(s_date, e_date):
         "-p",
         "--format=JobID,State,user%-24,Account%-24,partition%-24,Elapsed,AllocTRES%-160,NodeList%-160,ReqMem,MaxRSS,ExitCode,NCPUs,TotalCPU,CPUTime,ReqTRES,start,end%-120"
     ]
-    #print(command)
     # Run the command and redirect output to today_sacct.data
     with open("/tmp/kempner_sacct_collect_tmp_files/today_sacct.data", "w") as output_file:
-        subprocess.run(command, stdout=output_file, text=True)
+        subprocess.run(command, stdout=output_file, universal_newlines=True)
 
 
 def find_missing_dates(file_path):
@@ -195,7 +203,6 @@ def find_missing_dates(file_path):
     for line in lines:
         parts = line.strip().split(',')
         entry_date = datetime.strptime(parts[0], date_format).date()
-        print(entry_date)
         entry_dates.add(entry_date)
 
     # Find the oldest entry date in the file
@@ -224,7 +231,6 @@ def getdata_current_or_missing_dates():
         for start_date, end_date in missing_dates:
             s_date = str(start_date)
             e_date = str(end_date)
-            print(s_date, e_date)
             run_command(s_date, e_date)
             process_gpu_usage("/tmp/kempner_sacct_collect_tmp_files/today_sacct.data")
             file_pairs = [
@@ -438,7 +444,8 @@ class SlurmKempnerSacctsCollector:
 
 if __name__ == "__main__":
     getdata_current_or_missing_dates()
-    start_http_server(10003)
+    start_http_server(9007)
     REGISTRY.register(SlurmKempnerSacctsCollector())
     while True:
-        time.sleep(160)
+# We need to run this script once in a day
+        time.sleep(86400)
