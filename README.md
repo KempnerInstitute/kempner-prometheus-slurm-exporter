@@ -5,8 +5,6 @@
   <img src="https://raw.githubusercontent.com/KempnerInstitute/kempner-prometheus-slurm-exporter/add-description/figures/png/dash_board_snapshot.png" width="80%" />
 </p>
 
-
-
 ## Description
 
 This repository contains collectors intended to be used with Prometheus to gather and export statistics from Slurm. Each collector focuses on a specific aspect of Slurm.
@@ -25,5 +23,5 @@ This collector pulls historical usage data using [sacct](http://slurm.schedmd.co
 
 ## Dashboards
 
-Sample dashboards for the various collectors can be found in the `dashboards` directory.
+Sample dashboards for the various collectors can be found in the dash board server. 
 
