@@ -1,5 +1,11 @@
 # prometheus-slurm-exporter
-[Prometheus](https://prometheus.io/) Exporter for Slurm, utilizing the [Prometheus Python client library](https://github.com/prometheus/client_python).
+[Prometheus](https://prometheus.io/) Exporter for Slurm, utilizing the [Prometheus Python client library](https://github.com/prometheus/client_python). Here is the sample snapshot of the dashboard. 
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/KempnerInstitute///kempner-prometheus-slurm-exporter/main/figures/png/dash_board_snapshot.png" width="60%" />
+</p>
+
+
 
 ## Description
 
