@@ -7,7 +7,7 @@
 
 ## Description
 
-This repository contains collectors intended to be used with Prometheus to gather and export statistics from Slurm. Each collector focuses on a specific aspect of Slurm.
+This repository contains collectors intended to be used with Prometheus to gather and export statistics from Slurm. Each collector focuses on a specific aspect of Slurm. These collectors were written based on the existing FASRC collectors https://github.com/fasrc/prometheus-slurm-exporter
 
 ### Kempner Node Status
 
